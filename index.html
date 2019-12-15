@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Grade Calculator</title>
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+  
+  <h1>Calculate My Grade</h1>
+
+  <div id="app" class="form-group"></div>
+
+  <button id="add_assign">Add Test</button>
+  <button id="show_grade">Show My Final Grade</button>
+
+  <hr>
+
+  <h1 id="final_grade">00%</h1>
+
+  <script>
+
+    let assessments = []
+
+    let updateFields = () => {
+
+      let divlist = document.createElement('div')
+      let y = 1
+
+      for(var x of assessments) {
+
+        let div = document.createElement('div')
+        div.classList.add("form-control")
+
+        let label = document.createElement('label')
+        label.setAttribute('for', `assignment${y}`)
+
+        let labelText = document.createTextNode(`${x.type} - ${x.grade} - ${x.weighting}`)
+
+        let input = document.createElement('input')
+        input.setAttribute('type', 'number')
+        input.setAttribute('name', `assignment${y}`)
+        input.setAttribute('id', `assignment${y}`)
+
+        label.appendChild(labelText)
+        div.appendChild(label)
+        div.appendChild(input)
+
+        y++;
+        divlist.appendChild(div)
+      }
+
+      return divlist
+    }
+
+    let add_assign_button = document.querySelector('#add_assign')
+    add_assign_button.addEventListener('click', () => {
+      
+      let asktype = prompt("Is this an assignment or test?", "assignment")
+      let askgrade = prompt("What is the maximum score?", 100)
+      let askweight = prompt("How much is it worth?", 100)
+
+      assessments.push({type: asktype, grade: parseInt(askgrade), weighting: parseInt(askweight)})
+
+      let divapp = document.querySelector('#app')
+      divapp.innerHTML = ''
+      divapp.appendChild(updateFields())
+    })
+
+    let show_grade_button = document.querySelector('#show_grade')
+    show_grade_button.addEventListener('click', () => {
+
+      let grades = []
+      let allInputs = document.querySelectorAll('input')
+
+      let final_grade = 0
+      let final_weighting = 0
+
+      for(var grade of allInputs) {
+        grades.push(parseFloat(grade.value))
+        console.log(grade.value)
+      }
+
+      for(let i = 0; i < assessments.length; i++) {
+        final_grade += grades[i] / assessments[i].grade * assessments[i].weighting
+        final_weighting += assessments[i].weighting
+      }      
+    
+      let finalgrade = document.querySelector('#final_grade')
+      finalgrade.innerHTML = `${final_grade}% - out of ${final_weighting}%`
+
+    })
+
+    /*
+            let input01 = document.querySelector('#assign1 > input')
+        let finalgrade = document.querySelector('#final_grade')
+        */
+
+  </script>
+
+</body>
+</html>
